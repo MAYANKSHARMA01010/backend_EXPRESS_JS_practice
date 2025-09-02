@@ -21,6 +21,15 @@ app.get("/product/:productId", (req, res) => {
     console.log(`Trying to Access Product with ID: ${req.params.productId}`);
 });
 
+// json is use to send array of objects
+// we can send any status code too status(400) 
+app.get('/json', (req, res) => {
+    res.status(400).json({
+        message: "Hello, this is a JSON response",
+        status: "success"
+    });
+});
+
 app.listen(PORT, (err) => {
     if (err) {
         console.log("Error while starting the server");
