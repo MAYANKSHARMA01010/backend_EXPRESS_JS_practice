@@ -2,6 +2,21 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Global Middleware
+function Logger(req,res,next){
+    const Time = new Date().toISOString();
+    const Method = req.method;
+    const URL = req.url;
+    console.log(`
+        TimeStamp: ${Time},
+        Method: ${Method},
+        URL: ${URL}
+    `)
+    next()
+}
+
+app.use(Logger);
+
 app.get("/", (req, res) => {
     res.send("<h1>My First Express Server</h1>");
 });
@@ -29,6 +44,37 @@ app.get('/json', (req, res) => {
         status: "success"
     });
 });
+
+// http://localhost:${PORT}/query?name="Mayank"&age="20" -------> request
+app.get("/query", () => {
+    res.status(200)
+    res.send(`Hello ${req.query.name}`)
+})
+
+// Middleware
+function isProtected(req,res,next) {
+    if (req.query.password) {
+        // http://localhost:3000/protected?password=%22abc%22
+        next()
+    }
+    else {
+        // http://localhost:3000/protected
+        res.send(`
+            You are Not Authroized!!!!!
+            <h5>Please Get AuthoRized</h5>
+        `)
+    }
+}
+
+app.get('/protected',isProtected, (req,res) => {
+    if (req.query.password) {
+        // http://localhost:3000/protected?password=%22abc%22
+        res.send("You are Authroized")
+    }
+    else {
+        res.send("You are Not Authroized")
+    }
+})
 
 app.listen(PORT, (err) => {
     if (err) {
