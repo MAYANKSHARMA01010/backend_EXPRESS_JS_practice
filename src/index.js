@@ -17,6 +17,22 @@ function Logger(req,res,next){
 
 app.use(Logger);
 
+function isAdmin(req, res,next) {
+    console.log('IS ADMIN MIDDLEWARE')
+    if(req.query.admin) {
+        next()
+    } 
+    else {
+        res.send('You are not a admin')
+    }
+}
+app.use('/admin' , isAdmin)
+
+app.get('/admin/getUser', (req,res)=>{
+    res.send('You are admin')
+})
+
+
 app.get("/", (req, res) => {
     res.send("<h1>My First Express Server</h1>");
 });
