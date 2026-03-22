@@ -29,25 +29,36 @@ function isAdmin(req, res,next) {
 app.use('/admin' , isAdmin)
 
 app.get('/admin/getUser', (req,res)=>{
-    res.send('You are admin')
+    res.status(200).send('You are admin')
 })
 
 
 app.get("/", (req, res) => {
-    res.send("<h1>My First Express Server</h1>");
+    res.status(200).send("<h1>My First Express Server</h1>");
 });
 
 app.get("/home", (req, res) => {
-    res.send("<h3>This is My Home Page</h3>");
+    res.status(200).send("<h3>This is My Home Page</h3>");
 });
 
 app.get("/about", (req, res) => {
-    res.send("This is My About Page");
+    res.status(200).send("This is My About Page");
+});
+
+app.get("/product", (req, res) => {
+    res.status(200).send("This is My Product Page");
 });
 
 // dynamic route
-app.get("/product/:productId", (req, res) => {
+app.get("/product/:abc/:productId", (req, res) => {
     // every request have a params key (object)
+    // const id = req.params.productId;
+    const {
+        abc,
+        productId
+    } = req.params;
+
+    console.log(abc, productId); // { productId: '123' }
     res.send(`<h3>This is the Product Page for Product ID: <h2>${req.params.productId}</h2></h3>`);
     console.log(`Trying to Access Product with ID: ${req.params.productId}`);
 });
@@ -62,9 +73,14 @@ app.get('/json', (req, res) => {
 });
 
 // http://localhost:${PORT}/query?name="Mayank"&age="20" -------> request
-app.get("/query", () => {
+app.get("/query", (req,res) => {
     res.status(200)
-    res.send(`Hello ${req.query.name}`)
+    const data = req.query
+    if (!data.name) {
+        return res.send("Name is not defined")
+    }
+    console.log(data)
+    res.send(`Hello ${data.name}, Your Age is ${data.age}`)
 })
 
 // Middleware
@@ -100,3 +116,13 @@ app.listen(PORT, (err) => {
         console.log(`Server is running on http://localhost:${PORT}`);
     }
 });
+
+// use return on res.send() for not getting error in large code
+// in express req.query ---> we direclty get the data
+// app.get app.post app.put app.delete app.patch no need to give method use these
+
+
+
+// app.kyakarnahai(url, callback(req,res) => {
+//     info
+// })
